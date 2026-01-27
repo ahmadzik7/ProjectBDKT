@@ -13,7 +13,7 @@
       --accent: #bbdefb;
       --border: #333;
       --hover: #2a2a2a;
-      --success: #1a521a;
+      --success: #522c1a;
       --warning: #523a0a;
       --error: #521a1a;
       --filler1: #2196F3;
@@ -44,7 +44,7 @@
       text-align: center;
       margin-bottom: 20px;
       padding: 15px;
-      background: linear-gradient(135deg, var(--primary), #1b5e20);
+      background: linear-gradient(135deg, var(--primary), #5e1b1b);
       border-radius: 8px;
     }
     h1 {
@@ -420,7 +420,7 @@
 <body>
   <div class="container">
     <header>
-      <h1>INPUT BDKT</h1>
+      <h1>Input BDKT</h1>
     </header>
 
     <div class="form-section">
@@ -539,7 +539,7 @@
           <p>✅ Keyboard otomatis numpad saat input</p>
           <p>✅ Ketik 3 digit, otomatis jadi desimal</p>
           <p>✅ Contoh: 795 → 79.5 | 801 → 80.1</p>
-          <p>✅ Gunakan tombol Next/Tab untuk navigasi cepat</p>
+          <p>✅ Gunakan tombol Next pada keyboard untuk navigasi cepat</p>
         </div>
       </div>
 
@@ -761,6 +761,7 @@
       }
     }
 
+    // DIPERBAIKI: Fungsi auto format TANPA auto-next
     function autoFormatDecimalMobile(input) {
       // Remove all non-digit characters first
       let value = input.value.replace(/[^0-9]/g, '');
@@ -790,15 +791,7 @@
         input.style.backgroundColor = '#1a1a1a';
       }
       
-      // Auto move to next input on mobile
-      if (value.length === 4) {
-        const nextInput = input.parentElement.nextElementSibling?.querySelector('.weight-input');
-        if (nextInput) {
-          setTimeout(() => {
-            nextInput.focus();
-          }, 50);
-        }
-      }
+      // TIDAK ADA AUTO-NEXT - User harus manual pindah field
     }
 
     function updateProgress() {
@@ -1145,7 +1138,7 @@
       formData.append('overall_status', document.getElementById('overall-status').textContent);
       
       // Google Apps Script URL - GANTI DENGAN WEB APP URL ANDA
-      const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_WEB_APP_ID/exec';
+      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0b6Xcb0ub3hzdaxHnG2vDLo7npC4F9VqD-Y4ZbNo0Tj4m1yM2fLvaTaEAtd3Ak7_K4g/exec';
       
       fetch(SCRIPT_URL, { method: 'POST', body: formData })
         .then(r => r.json())
