@@ -13,9 +13,11 @@
       --accent: #bbdefb;
       --border: #333;
       --hover: #2a2a2a;
-      --success: #1a521f;
+      --success: #1a521a;
       --warning: #523a0a;
       --error: #521a1a;
+      --filler1: #2196F3;
+      --filler2: #4CAF50;
     }
     * {
       margin: 0;
@@ -30,7 +32,7 @@
       min-height: 100vh;
     }
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       background: var(--card);
       border-radius: 12px;
@@ -41,7 +43,7 @@
       text-align: center;
       margin-bottom: 30px;
       padding: 15px;
-      background: linear-gradient(135deg, var(--primary), #5e391b);
+      background: linear-gradient(135deg, var(--primary), #1b5e20);
       border-radius: 8px;
     }
     h1 {
@@ -55,7 +57,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 25px;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
       .form-section {
         grid-template-columns: 1fr;
       }
@@ -143,6 +145,18 @@
     .btn-warning:hover {
       background: #7a540d;
     }
+    .btn-filler1 {
+      background: var(--filler1);
+    }
+    .btn-filler1:hover {
+      background: #1976D2;
+    }
+    .btn-filler2 {
+      background: var(--filler2);
+    }
+    .btn-filler2:hover {
+      background: #388E3C;
+    }
     .message {
       padding: 12px;
       margin: 15px 0;
@@ -171,6 +185,9 @@
       grid-template-columns: repeat(5, 1fr);
       gap: 8px;
       margin-top: 15px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 5px;
     }
     .weight-input-wrapper {
       display: flex;
@@ -178,11 +195,14 @@
       align-items: center;
     }
     .weight-input-label {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--accent);
       margin-bottom: 2px;
       width: 100%;
       text-align: center;
+      background: #252525;
+      padding: 2px;
+      border-radius: 3px;
     }
     .weight-input {
       width: 100%;
@@ -194,22 +214,29 @@
       border-radius: 4px;
       color: white;
     }
+    .weight-input::placeholder {
+      color: #555;
+    }
     .std-values {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 10px;
       margin-top: 15px;
+      background: #252525;
+      padding: 15px;
+      border-radius: 8px;
     }
     .std-card {
-      background: #252525;
+      background: #333;
       padding: 12px;
       border-radius: 8px;
       text-align: center;
     }
     .std-card h4 {
-      font-size: 14px;
+      font-size: 12px;
       color: var(--accent);
       margin-bottom: 5px;
+      font-weight: 600;
     }
     .std-card .value {
       font-size: 18px;
@@ -219,9 +246,10 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 15px;
+      font-size: 13px;
     }
     .summary-table th, .summary-table td {
-      padding: 10px;
+      padding: 8px;
       text-align: center;
       border: 1px solid var(--border);
     }
@@ -271,12 +299,99 @@
       font-weight: bold;
       color: var(--primary);
     }
+    .filler-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #1a1a1a;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .filler-tab {
+      flex: 1;
+      padding: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    .filler-tab.active {
+      background: var(--filler1);
+      color: white;
+      box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+    }
+    .filler-tab:hover:not(.active) {
+      background: #2a2a2a;
+    }
+    .filler-content {
+      display: none;
+    }
+    .filler-content.active {
+      display: block;
+    }
+    .filler-section {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--filler1);
+    }
+    .filler-section.filler2 {
+      border-left-color: var(--filler2);
+    }
+    .filler-section h3 {
+      color: var(--filler1);
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+    .filler-section.filler2 h3 {
+      color: var(--filler2);
+    }
+    .progress-bar {
+      background: #2a2a2a;
+      border-radius: 20px;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .progress-bar div {
+      background: var(--primary);
+      height: 20px;
+      border-radius: 20px;
+      transition: width 0.3s;
+    }
+    .progress-text {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 5px;
+      font-weight: bold;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .status-pass {
+      background: #1a521a;
+      color: white;
+    }
+    .status-fail {
+      background: #521a1a;
+      color: white;
+    }
+    .status-warning {
+      background: #523a0a;
+      color: white;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Input Gramasi BDKT</h1>
+      <h1>📋 Input Gramasi 125 Pcs - Quality Control</h1>
     </header>
 
     <div class="form-section">
@@ -290,46 +405,60 @@
           <label for="mesin">Mesin:</label>
           <select id="mesin" required>
             <option value="">-- Pilih Mesin --</option>
-            <option value="D1">D1</option>
-            <option value="D2">D2</option>
-            <option value="D3">D3</option>
-            <option value="D4">D4</option>
-            <option value="D5">D5</option>
-            <option value="D6">D6</option>
-            <option value="D7">D7</option>
-            <option value="D8">D8</option>
-            <option value="D9">D9</option>
-            <option value="D10">D10</option>
-            <option value="D11">D11</option>
-            <option value="D12">D12</option>
-            <option value="D13">D13</option>
-            <option value="D14">D14</option>
-            <option value="D16">D16</option>
-            <option value="D17">D17</option>
-
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="filler">Filler:</label>
-          <select id="filler" required>
-            <option value="">-- Pilih Filler --</option>
-            <option value="Filler 1">Filler 1</option>
-            <option value="Filler 2">Filler 2</option>
+            <option value="Mesin 1">Mesin 1</option>
+            <option value="Mesin 2">Mesin 2</option>
+            <option value="Mesin 3">Mesin 3</option>
+            <option value="Mesin 4">Mesin 4</option>
+            <option value="Mesin 5">Mesin 5</option>
+            <option value="Mesin 6">Mesin 6</option>
+            <option value="Mesin 7">Mesin 7</option>
+            <option value="Mesin 8">Mesin 8</option>
           </select>
         </div>
 
         <div class="data-info">
           <h3>📊 Informasi Data</h3>
           <p><span class="highlight">Mesin:</span> <span id="info-mesin">-</span></p>
-          <p><span class="highlight">Filler:</span> <span id="info-filler">-</span></p>
-          <p><span class="highlight">Data Terisi:</span> <span id="info-filled">0/125</span></p>
+          <p><span class="highlight">Tanggal:</span> <span id="info-tanggal">-</span></p>
         </div>
 
-        <div class="form-group">
-          <label>Input 125 Pcs Gramasi (gr):</label>
-          <div class="grid-container" id="weights-grid">
-            <!-- 125 input fields akan di-generate di sini -->
+        <!-- FILLER 1 SECTION -->
+        <div class="filler-section">
+          <h3>🔵 FILLER 1</h3>
+          
+          <div class="progress-bar">
+            <div id="progress-filler1" style="width: 0%"></div>
+          </div>
+          <div class="progress-text">
+            <span id="progress-text-filler1">0/125</span>
+            <span id="status-filler1" class="status-badge status-warning">BELUM LENGKAP</span>
+          </div>
+
+          <div class="form-group">
+            <label>Input 125 Pcs Gramasi (gr):</label>
+            <div class="grid-container" id="weights-grid-filler1">
+              <!-- 125 input fields akan di-generate di sini -->
+            </div>
+          </div>
+        </div>
+
+        <!-- FILLER 2 SECTION -->
+        <div class="filler-section filler2">
+          <h3>🟢 FILLER 2</h3>
+          
+          <div class="progress-bar">
+            <div id="progress-filler2" style="width: 0%"></div>
+          </div>
+          <div class="progress-text">
+            <span id="progress-text-filler2">0/125</span>
+            <span id="status-filler2" class="status-badge status-warning">BELUM LENGKAP</span>
+          </div>
+
+          <div class="form-group">
+            <label>Input 125 Pcs Gramasi (gr):</label>
+            <div class="grid-container" id="weights-grid-filler2">
+              <!-- 125 input fields akan di-generate di sini -->
+            </div>
           </div>
         </div>
 
@@ -370,11 +499,12 @@
 
         <div class="info-box">
           <h3>Panduan Pengisian</h3>
-          <p>1. Pilih Mesin dan Filler yang akan diinput data</p>
-          <p>2. Isi semua 125 pcs berat produk sesuai hasil timbangan</p>
-          <p>3. Klik "Hitung Summary" untuk melihat analisis data</p>
-          <p>4. Pastikan semua data valid sebelum mengirim ke spreadsheet</p>
-          <p>5. Gunakan tombol "Ekspor XLSX" untuk menyimpan data dalam format Excel</p>
+          <p>1. Pilih Mesin dan Tanggal Produksi</p>
+          <p>2. Isi data Filler 1 (125 pcs) - otomatis format desimal</p>
+          <p>3. Isi data Filler 2 (125 pcs) - otomatis format desimal</p>
+          <p>4. Klik "Hitung Summary" untuk melihat analisis</p>
+          <p>5. Kirim ke spreadsheet jika data sudah lengkap</p>
+          <p><strong>💡 Tip:</strong> Ketik 3 digit angka, otomatis jadi desimal (contoh: 795 → 79.5)</p>
         </div>
       </div>
 
@@ -386,8 +516,8 @@
             <thead>
               <tr>
                 <th>Parameter</th>
-                <th>Filler 1</th>
-                <th>Filler 2</th>
+                <th>🔵 Filler 1</th>
+                <th>🟢 Filler 2</th>
               </tr>
             </thead>
             <tbody>
@@ -416,8 +546,8 @@
             <thead>
               <tr>
                 <th>Kategori</th>
-                <th>Filler 1</th>
-                <th>Filler 2</th>
+                <th>🔵 Filler 1</th>
+                <th>🟢 Filler 2</th>
                 <th>%Filler 1</th>
                 <th>%Filler 2</th>
               </tr>
@@ -455,16 +585,26 @@
                 <td>TOTAL (harus 125 pcs)</td>
                 <td id="total-filler1">0</td>
                 <td id="total-filler2">0</td>
-                <td colspan="2">100.00%</td>
+                <td id="total-pct1">0.00%</td>
+                <td id="total-pct2">0.00%</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div class="info-box">
+          <h3>✅ Status Kualitas</h3>
+          <p><strong>Filler 1:</strong> <span id="quality-status1">BELUM DIHITUNG</span></p>
+          <p><strong>Filler 2:</strong> <span id="quality-status2">BELUM DIHITUNG</span></p>
+          <p><strong>Keseluruhan:</strong> <span id="overall-status">BELUM DIHITUNG</span></p>
+        </div>
+
+        <div class="info-box">
           <h3>Persyaratan Mutu</h3>
-          <p>PERATURAN 1: Minimal harus mencapai STD</p>
-          <p>PERATURAN 2: Maks 7 dalam 125</p>
+          <p><strong>PERATURAN 1:</strong> Average minimal harus mencapai STD (79.20gr)</p>
+          <p><strong>PERATURAN 2:</strong> Maksimal 7 pcs dalam 125 yang Over (>82.7gr)</p>
+          <p><strong>✅ PASS:</strong> Kedua aturan terpenuhi</p>
+          <p><strong>❌ FAIL:</strong> Salah satu aturan tidak terpenuhi</p>
         </div>
       </div>
     </div>
@@ -491,8 +631,9 @@
 
     // Inisialisasi form
     document.addEventListener('DOMContentLoaded', () => {
-      // Generate 125 input fields dengan nomor
-      generateWeightInputs();
+      // Generate 125 input fields dengan nomor untuk kedua filler
+      generateWeightInputs('Filler 1', 'weights-grid-filler1');
+      generateWeightInputs('Filler 2', 'weights-grid-filler2');
       
       // Set today's date as default
       const today = new Date();
@@ -501,7 +642,7 @@
       
       // Event listeners
       document.getElementById('mesin').addEventListener('change', updateInfo);
-      document.getElementById('filler').addEventListener('change', updateInfo);
+      document.getElementById('tanggal').addEventListener('change', updateInfo);
       document.getElementById('calculateBtn').addEventListener('click', calculateSummary);
       document.getElementById('exportXlsxBtn').addEventListener('click', exportToXLSX);
       document.getElementById('submitBtn').addEventListener('click', submitToSheets);
@@ -511,8 +652,8 @@
       updateInfo();
     });
 
-    function generateWeightInputs() {
-      const grid = document.getElementById('weights-grid');
+    function generateWeightInputs(fillerName, gridId) {
+      const grid = document.getElementById(gridId);
       grid.innerHTML = '';
       
       for (let i = 1; i <= 125; i++) {
@@ -524,15 +665,24 @@
         label.textContent = i;
         
         const input = document.createElement('input');
-        input.type = 'number';
+        input.type = 'text'; // Ganti ke text untuk auto-format
         input.className = 'weight-input';
-        input.step = '0.01';
-        input.placeholder = 'gr';
-        input.min = '0';
+        input.placeholder = '0.00';
         input.dataset.index = i;
+        input.dataset.filler = fillerName;
+        
+        // Auto format saat input
         input.addEventListener('input', (e) => {
-          validateInput(e.target);
+          autoFormatDecimal(e.target);
+          updateProgress();
           updateInfo();
+        });
+        
+        // Format saat blur (keluar dari input)
+        input.addEventListener('blur', (e) => {
+          if (e.target.value) {
+            e.target.value = parseFloat(e.target.value).toFixed(2);
+          }
         });
         
         wrapper.appendChild(label);
@@ -541,54 +691,134 @@
       }
     }
 
-    function validateInput(input) {
-      if (input.value && !isNaN(input.value)) {
+    function autoFormatDecimal(input) {
+      let value = input.value.replace(/[^0-9]/g, '');
+      
+      if (value.length > 2) {
+        // Tambahkan titik desimal sebelum 2 digit terakhir
+        value = value.slice(0, -2) + '.' + value.slice(-2);
+      } else if (value.length === 2) {
+        // Tambahkan 0 di depan jika hanya 2 digit
+        value = '0.' + value;
+      } else if (value.length === 1) {
+        // Tambahkan 0.0 di depan jika hanya 1 digit
+        value = '0.0' + value;
+      }
+      
+      input.value = value;
+      
+      // Validasi background color
+      if (value && !isNaN(value)) {
         input.style.backgroundColor = '#2a2a2a';
       } else {
         input.style.backgroundColor = '#1a1a1a';
       }
     }
 
+    function updateProgress() {
+      // Update Filler 1
+      const filled1 = Array.from(document.querySelectorAll('#weights-grid-filler1 .weight-input'))
+        .filter(input => input.value && !isNaN(input.value)).length;
+      const progress1 = (filled1 / 125) * 100;
+      document.getElementById('progress-filler1').style.width = progress1 + '%';
+      document.getElementById('progress-text-filler1').textContent = `${filled1}/125`;
+      
+      // Update status
+      const status1 = filled1 === 125 ? 'status-pass' : filled1 > 0 ? 'status-warning' : 'status-warning';
+      document.getElementById('status-filler1').className = 'status-badge ' + status1;
+      document.getElementById('status-filler1').textContent = filled1 === 125 ? 'LENGKAP ✓' : filled1 > 0 ? 'DALAM PROSES' : 'BELUM LENGKAP';
+      
+      // Update Filler 2
+      const filled2 = Array.from(document.querySelectorAll('#weights-grid-filler2 .weight-input'))
+        .filter(input => input.value && !isNaN(input.value)).length;
+      const progress2 = (filled2 / 125) * 100;
+      document.getElementById('progress-filler2').style.width = progress2 + '%';
+      document.getElementById('progress-text-filler2').textContent = `${filled2}/125`;
+      
+      const status2 = filled2 === 125 ? 'status-pass' : filled2 > 0 ? 'status-warning' : 'status-warning';
+      document.getElementById('status-filler2').className = 'status-badge ' + status2;
+      document.getElementById('status-filler2').textContent = filled2 === 125 ? 'LENGKAP ✓' : filled2 > 0 ? 'DALAM PROSES' : 'BELUM LENGKAP';
+    }
+
     function updateInfo() {
       const mesin = document.getElementById('mesin').value;
-      const filler = document.getElementById('filler').value;
+      const tanggal = document.getElementById('tanggal').value;
       
       document.getElementById('info-mesin').textContent = mesin || '-';
-      document.getElementById('info-filler').textContent = filler || '-';
       
-      // Update filled count
-      const filled = Array.from(document.querySelectorAll('.weight-input'))
-        .filter(input => input.value && !isNaN(input.value)).length;
-      document.getElementById('info-filled').textContent = `${filled}/125`;
+      if (tanggal) {
+        const dateObj = new Date(tanggal);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('info-tanggal').textContent = dateObj.toLocaleDateString('id-ID', options);
+      } else {
+        document.getElementById('info-tanggal').textContent = '-';
+      }
+      
+      updateProgress();
     }
 
     function calculateSummary() {
       const mesin = document.getElementById('mesin').value;
-      const filler = document.getElementById('filler').value;
+      const tanggal = document.getElementById('tanggal').value;
       
-      if (!mesin || !filler) {
-        showMessage('⚠️ Pilih Mesin dan Filler terlebih dahulu', 'warning');
+      if (!mesin || !tanggal) {
+        showMessage('⚠️ Pilih Mesin dan Tanggal terlebih dahulu', 'warning');
         return;
       }
       
-      const weights = Array.from(document.querySelectorAll('.weight-input'))
+      // Hitung untuk Filler 1
+      const weights1 = Array.from(document.querySelectorAll('#weights-grid-filler1 .weight-input'))
         .map(input => parseFloat(input.value) || null)
         .filter(value => value !== null);
       
-      if (weights.length === 0) {
-        showMessage('⚠️ Masukkan minimal 1 berat untuk perhitungan', 'warning');
+      if (weights1.length === 0) {
+        showMessage('⚠️ Filler 1: Masukkan minimal 1 berat untuk perhitungan', 'warning');
         return;
       }
       
-      if (weights.length < 125) {
-        showMessage(`⚠️ Data tidak lengkap: ${weights.length}/125 pcs`, 'warning');
-      } else {
-        showMessage('✅ Data lengkap (125 pcs)', 'success');
+      if (weights1.length < 125) {
+        showMessage(`⚠️ Filler 1: Data tidak lengkap (${weights1.length}/125 pcs)`, 'warning');
+        return;
       }
       
-      // Simpan data ke filler yang dipilih
-      fillerData[filler] = [...weights];
+      // Hitung untuk Filler 2
+      const weights2 = Array.from(document.querySelectorAll('#weights-grid-filler2 .weight-input'))
+        .map(input => parseFloat(input.value) || null)
+        .filter(value => value !== null);
       
+      if (weights2.length === 0) {
+        showMessage('⚠️ Filler 2: Masukkan minimal 1 berat untuk perhitungan', 'warning');
+        return;
+      }
+      
+      if (weights2.length < 125) {
+        showMessage(`⚠️ Filler 2: Data tidak lengkap (${weights2.length}/125 pcs)`, 'warning');
+        return;
+      }
+      
+      showMessage('✅ Data lengkap untuk kedua filler (125/125 pcs)', 'success');
+      
+      // Simpan data
+      fillerData['Filler 1'] = [...weights1];
+      fillerData['Filler 2'] = [...weights2];
+      
+      // Hitung Filler 1
+      calculateFiller('Filler 1', weights1);
+      // Hitung Filler 2
+      calculateFiller('Filler 2', weights2);
+      
+      // Update STD values in UI
+      document.getElementById('std-value').textContent = STD_CONFIG.std.toFixed(2);
+      document.getElementById('min-std-value').textContent = STD_CONFIG.minStd.toFixed(2);
+      document.getElementById('max-std-value').textContent = STD_CONFIG.maxStd.toFixed(2);
+      document.getElementById('tu1-value').textContent = STD_CONFIG.tu1.toFixed(2);
+      document.getElementById('tu2-value').textContent = STD_CONFIG.tu2.toFixed(2);
+      
+      // Update quality status
+      updateQualityStatus();
+    }
+
+    function calculateFiller(fillerName, weights) {
       // Basic calculations
       const average = weights.reduce((sum, val) => sum + val, 0) / weights.length;
       const min = Math.min(...weights);
@@ -614,8 +844,8 @@
         }
       });
       
-      // Update UI berdasarkan filler yang dipilih
-      const fillerNum = filler === 'Filler 1' ? '1' : '2';
+      // Update UI
+      const fillerNum = fillerName === 'Filler 1' ? '1' : '2';
       
       document.getElementById(`avg-filler${fillerNum}`).textContent = average.toFixed(2);
       document.getElementById(`min-filler${fillerNum}`).textContent = min.toFixed(2);
@@ -635,80 +865,148 @@
         document.getElementById(`over-std-pct${fillerNum}`).textContent = ((categories.overStd / total) * 100).toFixed(2) + '%';
         document.getElementById(`std-tu1-pct${fillerNum}`).textContent = ((categories.stdTu1 / total) * 100).toFixed(2) + '%';
         document.getElementById(`tu1-tu2-pct${fillerNum}`).textContent = ((categories.tu1Tu2 / total) * 100).toFixed(2) + '%';
+        document.getElementById(`total-pct${fillerNum}`).textContent = '100.00%';
       }
+    }
+
+    function updateQualityStatus() {
+      // Filler 1
+      const avg1 = parseFloat(document.getElementById('avg-filler1').textContent);
+      const over1 = parseInt(document.getElementById('over-filler1').textContent);
+      const status1 = (over1 <= 7 && avg1 >= STD_CONFIG.std) ? '✅ PASS' : '❌ FAIL';
+      document.getElementById('quality-status1').textContent = status1;
+      document.getElementById('quality-status1').style.color = status1.includes('PASS') ? '#4CAF50' : '#F44336';
       
-      // Update STD values in UI
-      document.getElementById('std-value').textContent = STD_CONFIG.std.toFixed(2);
-      document.getElementById('min-std-value').textContent = STD_CONFIG.minStd.toFixed(2);
-      document.getElementById('max-std-value').textContent = STD_CONFIG.maxStd.toFixed(2);
-      document.getElementById('tu1-value').textContent = STD_CONFIG.tu1.toFixed(2);
-      document.getElementById('tu2-value').textContent = STD_CONFIG.tu2.toFixed(2);
+      // Filler 2
+      const avg2 = parseFloat(document.getElementById('avg-filler2').textContent);
+      const over2 = parseInt(document.getElementById('over-filler2').textContent);
+      const status2 = (over2 <= 7 && avg2 >= STD_CONFIG.std) ? '✅ PASS' : '❌ FAIL';
+      document.getElementById('quality-status2').textContent = status2;
+      document.getElementById('quality-status2').style.color = status2.includes('PASS') ? '#4CAF50' : '#F44336';
+      
+      // Overall
+      if (status1.includes('PASS') && status2.includes('PASS')) {
+        document.getElementById('overall-status').textContent = '✅ KEDUA FILLER PASS';
+        document.getElementById('overall-status').style.color = '#4CAF50';
+      } else if (status1.includes('FAIL') && status2.includes('FAIL')) {
+        document.getElementById('overall-status').textContent = '❌ KEDUA FILLER FAIL';
+        document.getElementById('overall-status').style.color = '#F44336';
+      } else {
+        document.getElementById('overall-status').textContent = '⚠️ SALAH SATU FAIL';
+        document.getElementById('overall-status').style.color = '#FF9800';
+      }
     }
 
     function exportToXLSX() {
       const mesin = document.getElementById('mesin').value;
-      const filler = document.getElementById('filler').value;
+      const tanggal = document.getElementById('tanggal').value;
       
-      if (!mesin || !filler) {
-        showMessage('⚠️ Pilih Mesin dan Filler terlebih dahulu', 'warning');
+      if (!mesin || !tanggal) {
+        showMessage('⚠️ Pilih Mesin dan Tanggal terlebih dahulu', 'warning');
         return;
       }
       
-      const weights = Array.from(document.querySelectorAll('.weight-input'))
-        .map(input => parseFloat(input.value) || '')
-        .filter(value => value !== '');
-      
-      if (weights.length === 0) {
-        showMessage('⚠️ Tidak ada data untuk diekspor', 'warning');
+      // Cek apakah sudah dihitung
+      if (document.getElementById('avg-filler1').textContent === '-') {
+        showMessage('⚠️ Klik "Hitung Summary" terlebih dahulu', 'warning');
         return;
       }
       
-      // Create worksheet
-      const wsData = [
+      // Create workbook
+      const wb = XLSX.utils.book_new();
+      
+      // Sheet 1: Filler 1 Data
+      const weights1 = Array.from(document.querySelectorAll('#weights-grid-filler1 .weight-input'))
+        .map(input => parseFloat(input.value) || '');
+      
+      const wsData1 = [
         ['No', 'Gramasi (gr)'],
-        ...weights.map((value, index) => [index + 1, value])
+        ...weights1.map((value, index) => [index + 1, value])
       ];
       
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      const ws1 = XLSX.utils.aoa_to_sheet(wsData1);
       
-      // Add summary section
-      const fillerNum = filler === 'Filler 1' ? '1' : '2';
+      // Sheet 2: Filler 2 Data
+      const weights2 = Array.from(document.querySelectorAll('#weights-grid-filler2 .weight-input'))
+        .map(input => parseFloat(input.value) || '');
+      
+      const wsData2 = [
+        ['No', 'Gramasi (gr)'],
+        ...weights2.map((value, index) => [index + 1, value])
+      ];
+      
+      const ws2 = XLSX.utils.aoa_to_sheet(wsData2);
+      
+      // Sheet 3: Summary
       const summaryData = [
-        ['Laporan Gramasi 125 Pcs'],
+        ['LAPORAN GRAMASI 125 PCS'],
         ['Mesin', mesin],
-        ['Filler', filler],
-        ['Tanggal', document.getElementById('tanggal').value],
+        ['Tanggal', tanggal],
         [],
-        ['Summary'],
-        ['Parameter', 'Value'],
-        ['Average', document.getElementById(`avg-filler${fillerNum}`).textContent],
-        ['Min', document.getElementById(`min-filler${fillerNum}`).textContent],
-        ['Max', document.getElementById(`max-filler${fillerNum}`).textContent],
-        ['Over (>82.7gr)', document.getElementById(`over-filler${fillerNum}`).textContent],
-        ['Over-STD (82.7-79.2gr)', document.getElementById(`over-std-filler${fillerNum}`).textContent],
-        ['STD-TU1 (79.2-74.7gr)', document.getElementById(`std-tu1-filler${fillerNum}`).textContent],
-        ['TU1-TU2 (74.7-70.2gr)', document.getElementById(`tu1-tu2-filler${fillerNum}`).textContent],
-        ['Total', document.getElementById(`total-filler${fillerNum}`).textContent]
+        ['RINGKASAN ANALISIS'],
+        ['Parameter', '🔵 Filler 1', '🟢 Filler 2'],
+        ['Average', document.getElementById('avg-filler1').textContent, document.getElementById('avg-filler2').textContent],
+        ['Min (g)', document.getElementById('min-filler1').textContent, document.getElementById('min-filler2').textContent],
+        ['Max (g)', document.getElementById('max-filler1').textContent, document.getElementById('max-filler2').textContent],
+        [],
+        ['ANALISA DATA'],
+        ['Kategori', '🔵 Filler 1', '🟢 Filler 2', '%Filler 1', '%Filler 2'],
+        ['Over (>82.7gr)', 
+          document.getElementById('over-filler1').textContent,
+          document.getElementById('over-filler2').textContent,
+          document.getElementById('over-pct1').textContent,
+          document.getElementById('over-pct2').textContent],
+        ['Over-STD (82.7-79.2gr)',
+          document.getElementById('over-std-filler1').textContent,
+          document.getElementById('over-std-filler2').textContent,
+          document.getElementById('over-std-pct1').textContent,
+          document.getElementById('over-std-pct2').textContent],
+        ['STD-TU1 (79.2-74.7gr)',
+          document.getElementById('std-tu1-filler1').textContent,
+          document.getElementById('std-tu1-filler2').textContent,
+          document.getElementById('std-tu1-pct1').textContent,
+          document.getElementById('std-tu1-pct2').textContent],
+        ['TU1-TU2 (74.7-70.2gr)',
+          document.getElementById('tu1-tu2-filler1').textContent,
+          document.getElementById('tu1-tu2-filler2').textContent,
+          document.getElementById('tu1-tu2-pct1').textContent,
+          document.getElementById('tu1-tu2-pct2').textContent],
+        ['TOTAL', 
+          document.getElementById('total-filler1').textContent,
+          document.getElementById('total-filler2').textContent,
+          document.getElementById('total-pct1').textContent,
+          document.getElementById('total-pct2').textContent],
+        [],
+        ['STATUS KUALITAS'],
+        ['Filler 1', document.getElementById('quality-status1').textContent],
+        ['Filler 2', document.getElementById('quality-status2').textContent],
+        ['Keseluruhan', document.getElementById('overall-status').textContent]
       ];
       
       const summaryWs = XLSX.utils.aoa_to_sheet(summaryData);
       
-      // Create workbook
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Data Gramasi");
-      XLSX.utils.book_append_sheet(wb, summaryWs, "Ringkasan");
+      // Add sheets to workbook
+      XLSX.utils.book_append_sheet(wb, ws1, "Filler 1 Data");
+      XLSX.utils.book_append_sheet(wb, ws2, "Filler 2 Data");
+      XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
       
       // Export
-      XLSX.writeFile(wb, `Laporan_Gramasi_${mesin}_${filler}_${new Date().toISOString().slice(0,10)}.xlsx`);
+      XLSX.writeFile(wb, `Laporan_Gramasi_${mesin}_${new Date().toISOString().slice(0,10)}.xlsx`);
       showMessage('✅ Data berhasil diekspor ke XLSX', 'success');
     }
 
     function submitToSheets() {
       const mesin = document.getElementById('mesin').value;
-      const filler = document.getElementById('filler').value;
+      const tanggal = document.getElementById('tanggal').value;
       
-      if (!mesin || !filler) {
-        showMessage('⚠️ Pilih Mesin dan Filler terlebih dahulu', 'warning');
+      if (!mesin || !tanggal) {
+        showMessage('⚠️ Pilih Mesin dan Tanggal terlebih dahulu', 'warning');
+        return;
+      }
+      
+      // Cek apakah sudah dihitung
+      if (document.getElementById('avg-filler1').textContent === '-') {
+        showMessage('⚠️ Klik "Hitung Summary" terlebih dahulu', 'warning');
         return;
       }
       
@@ -717,42 +1015,56 @@
       btn.textContent = 'Mengirim...';
       btn.disabled = true;
       
-      const weights = Array.from(document.querySelectorAll('.weight-input'))
+      // Prepare data for Filler 1
+      const weights1 = Array.from(document.querySelectorAll('#weights-grid-filler1 .weight-input'))
+        .map(input => input.value);
+      
+      // Prepare data for Filler 2
+      const weights2 = Array.from(document.querySelectorAll('#weights-grid-filler2 .weight-input'))
         .map(input => input.value);
       
       const formData = new FormData();
-      formData.append('tanggal', document.getElementById('tanggal').value);
+      formData.append('tanggal', tanggal);
       formData.append('mesin', mesin);
-      formData.append('filler', filler);
-      formData.append('total', weights.length);
       
-      // Add all 125 weights
-      weights.forEach((weight, index) => {
-        formData.append(`weight${index + 1}`, weight);
+      // Add Filler 1 data
+      formData.append('filler1_total', weights1.length);
+      weights1.forEach((weight, index) => {
+        formData.append(`filler1_weight${index + 1}`, weight);
       });
+      formData.append('filler1_average', document.getElementById('avg-filler1').textContent);
+      formData.append('filler1_min', document.getElementById('min-filler1').textContent);
+      formData.append('filler1_max', document.getElementById('max-filler1').textContent);
+      formData.append('filler1_over', document.getElementById('over-filler1').textContent);
+      formData.append('filler1_overStd', document.getElementById('over-std-filler1').textContent);
+      formData.append('filler1_stdTu1', document.getElementById('std-tu1-filler1').textContent);
+      formData.append('filler1_tu1Tu2', document.getElementById('tu1-tu2-filler1').textContent);
       
-      // Add summary data
-      const fillerNum = filler === 'Filler 1' ? '1' : '2';
-      formData.append('average', document.getElementById(`avg-filler${fillerNum}`).textContent);
-      formData.append('min', document.getElementById(`min-filler${fillerNum}`).textContent);
-      formData.append('max', document.getElementById(`max-filler${fillerNum}`).textContent);
-      formData.append('over', document.getElementById(`over-filler${fillerNum}`).textContent);
-      formData.append('overStd', document.getElementById(`over-std-filler${fillerNum}`).textContent);
-      formData.append('stdTu1', document.getElementById(`std-tu1-filler${fillerNum}`).textContent);
-      formData.append('tu1Tu2', document.getElementById(`tu1-tu2-filler${fillerNum}`).textContent);
+      // Add Filler 2 data
+      formData.append('filler2_total', weights2.length);
+      weights2.forEach((weight, index) => {
+        formData.append(`filler2_weight${index + 1}`, weight);
+      });
+      formData.append('filler2_average', document.getElementById('avg-filler2').textContent);
+      formData.append('filler2_min', document.getElementById('min-filler2').textContent);
+      formData.append('filler2_max', document.getElementById('max-filler2').textContent);
+      formData.append('filler2_over', document.getElementById('over-filler2').textContent);
+      formData.append('filler2_overStd', document.getElementById('over-std-filler2').textContent);
+      formData.append('filler2_stdTu1', document.getElementById('std-tu1-filler2').textContent);
+      formData.append('filler2_tu1Tu2', document.getElementById('tu1-tu2-filler2').textContent);
       
-      // Simulated Google Apps Script URL
-      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0b6Xcb0ub3hzdaxHnG2vDLo7npC4F9VqD-Y4ZbNo0Tj4m1yM2fLvaTaEAtd3Ak7_K4g/exec';
+      // Quality status
+      formData.append('filler1_status', document.getElementById('quality-status1').textContent);
+      formData.append('filler2_status', document.getElementById('quality-status2').textContent);
+      formData.append('overall_status', document.getElementById('overall-status').textContent);
+      
+      // Google Apps Script URL
+      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw2GuEwFtq-PU-2RqzLL009ufyFPkOTsRAKrjuQjfEx-oAiZmWwmCnaMZw-TtBaolOv/exec';
       
       fetch(SCRIPT_URL, { method: 'POST', body: formData })
         .then(r => r.json())
         .then(d => {
           showMessage('✅ Data berhasil dikirim ke spreadsheet!', 'success');
-          
-          // Clear form setelah berhasil kirim
-          setTimeout(() => {
-            clearCurrentFiller();
-          }, 2000);
         })
         .catch(e => {
           console.error(e);
@@ -764,41 +1076,36 @@
         });
     }
 
-    function clearCurrentFiller() {
-      // Clear all weight inputs
-      document.querySelectorAll('.weight-input').forEach(input => {
+    function resetForm() {
+      if (!confirm('Yakin ingin reset form? Semua data akan hilang!')) {
+        return;
+      }
+      
+      // Reset selects
+      document.getElementById('mesin').value = '';
+      document.getElementById('tanggal').value = '';
+      
+      // Clear all weight inputs for Filler 1
+      document.querySelectorAll('#weights-grid-filler1 .weight-input').forEach(input => {
         input.value = '';
         input.style.backgroundColor = '#1a1a1a';
       });
       
-      // Reset info
-      updateInfo();
-      
-      // Clear message
-      document.getElementById('message').className = 'message';
-      document.getElementById('message').textContent = '';
-    }
-
-    function resetForm() {
-      // Reset all inputs
-      document.getElementById('tanggal').value = '';
-      document.getElementById('mesin').value = '';
-      document.getElementById('filler').value = '';
-      
-      // Clear all weight inputs
-      document.querySelectorAll('.weight-input').forEach(input => {
+      // Clear all weight inputs for Filler 2
+      document.querySelectorAll('#weights-grid-filler2 .weight-input').forEach(input => {
         input.value = '';
         input.style.backgroundColor = '#1a1a1a';
       });
       
       // Reset summary
-      document.querySelectorAll('.summary-table td').forEach(td => {
-        if (td.id.includes('filler')) {
-          td.textContent = '-';
-        }
-      });
+      document.getElementById('avg-filler1').textContent = '-';
+      document.getElementById('avg-filler2').textContent = '-';
+      document.getElementById('min-filler1').textContent = '-';
+      document.getElementById('min-filler2').textContent = '-';
+      document.getElementById('max-filler1').textContent = '-';
+      document.getElementById('max-filler2').textContent = '-';
       
-      // Reset totals
+      // Reset categories
       document.getElementById('over-filler1').textContent = '0';
       document.getElementById('over-filler2').textContent = '0';
       document.getElementById('over-std-filler1').textContent = '0';
@@ -809,6 +1116,8 @@
       document.getElementById('tu1-tu2-filler2').textContent = '0';
       document.getElementById('total-filler1').textContent = '0';
       document.getElementById('total-filler2').textContent = '0';
+      
+      // Reset percentages
       document.getElementById('over-pct1').textContent = '0.00%';
       document.getElementById('over-pct2').textContent = '0.00%';
       document.getElementById('over-std-pct1').textContent = '0.00%';
@@ -817,6 +1126,16 @@
       document.getElementById('std-tu1-pct2').textContent = '0.00%';
       document.getElementById('tu1-tu2-pct1').textContent = '0.00%';
       document.getElementById('tu1-tu2-pct2').textContent = '0.00%';
+      document.getElementById('total-pct1').textContent = '0.00%';
+      document.getElementById('total-pct2').textContent = '0.00%';
+      
+      // Reset quality status
+      document.getElementById('quality-status1').textContent = 'BELUM DIHITUNG';
+      document.getElementById('quality-status2').textContent = 'BELUM DIHITUNG';
+      document.getElementById('overall-status').textContent = 'BELUM DIHITUNG';
+      document.getElementById('quality-status1').style.color = '';
+      document.getElementById('quality-status2').style.color = '';
+      document.getElementById('overall-status').style.color = '';
       
       // Clear stored data
       fillerData['Filler 1'] = [];
