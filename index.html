@@ -13,7 +13,7 @@
       --accent: #bbdefb;
       --border: #333;
       --hover: #2a2a2a;
-      --success: #522c1a;
+      --success: #1a521a;
       --warning: #523a0a;
       --error: #521a1a;
       --filler1: #2196F3;
@@ -44,7 +44,7 @@
       text-align: center;
       margin-bottom: 20px;
       padding: 15px;
-      background: linear-gradient(135deg, var(--primary), #5e1b1b);
+      background: linear-gradient(135deg, var(--primary), #19b824);
       border-radius: 8px;
     }
     h1 {
@@ -415,12 +415,29 @@
         min-width: 100%;
       }
     }
+    
+    /* CHART STYLES */
+    .chart-container {
+      position: relative;
+      height: 250px;
+      margin-top: 15px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .chart-title {
+      text-align: center;
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Input BDKT</h1>
+      <h1>Input Gramasi BDKT </h1>
     </header>
 
     <div class="form-section">
@@ -537,9 +554,10 @@
         <div class="info-box">
           <h3>📱 Mobile Tips</h3>
           <p>✅ Keyboard otomatis numpad saat input</p>
-          <p>✅ Ketik 3 digit, otomatis jadi desimal</p>
-          <p>✅ Contoh: 795 → 79.5 | 801 → 80.1</p>
-          <p>✅ Gunakan tombol Next pada keyboard untuk navigasi cepat</p>
+          <p>✅ Ketik 3-4 digit, otomatis jadi desimal</p>
+          <p>✅ Contoh: 8723 → 87.23 | 795 → 79.5</p>
+          <p>✅ Gunakan tombol Next untuk navigasi cepat</p>
+          <p>💾 Data tersimpan otomatis (tidak hilang saat refresh)</p>
         </div>
       </div>
 
@@ -640,12 +658,29 @@
           <p>2. Max 7 pcs Over (>82.7gr)</p>
           <p>✅ PASS: Kedua syarat terpenuhi</p>
         </div>
+        
+        <!-- CHART SECTION -->
+        <div class="form-group">
+          <div class="chart-title">📊 Sebaran Gramasi Filler 1</div>
+          <div class="chart-container">
+            <canvas id="gramasiChart1"></canvas>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="chart-title">📊 Sebaran Gramasi Filler 2</div>
+          <div class="chart-container">
+            <canvas id="gramasiChart2"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- XLSX Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
     // Konfigurasi STD
@@ -663,20 +698,47 @@
       'Filler 2': []
     };
 
+    // Storage keys untuk autosave
+    const STORAGE_KEYS = {
+      tanggal: 'gramasi_tanggal',
+      mesin: 'gramasi_mesin',
+      filler1: 'gramasi_filler1_weights',
+      filler2: 'gramasi_filler2_weights',
+      lastSaved: 'gramasi_last_saved'
+    };
+    
+    // Global chart variables
+    let chartFiller1 = null;
+    let chartFiller2 = null;
+
     // Inisialisasi form
     document.addEventListener('DOMContentLoaded', () => {
       // Generate 125 input fields dengan nomor untuk kedua filler
       generateWeightInputs('Filler 1', 'weights-grid-filler1');
       generateWeightInputs('Filler 2', 'weights-grid-filler2');
       
-      // Set today's date as default
-      const today = new Date();
-      const dateString = today.toISOString().split('T')[0];
-      document.getElementById('tanggal').value = dateString;
+      // Set today's date as default (hanya jika belum ada data tersimpan)
+      const savedTanggal = localStorage.getItem(STORAGE_KEYS.tanggal);
+      if (!savedTanggal) {
+        const today = new Date();
+        const dateString = today.toISOString().split('T')[0];
+        document.getElementById('tanggal').value = dateString;
+      }
+      
+      // Load data dari localStorage
+      loadFromLocalStorage();
       
       // Event listeners
-      document.getElementById('mesin').addEventListener('change', updateInfo);
-      document.getElementById('tanggal').addEventListener('change', updateInfo);
+      document.getElementById('mesin').addEventListener('change', () => {
+        updateInfo();
+        saveToLocalStorage();
+      });
+      
+      document.getElementById('tanggal').addEventListener('change', () => {
+        updateInfo();
+        saveToLocalStorage();
+      });
+      
       document.getElementById('calculateBtn').addEventListener('click', calculateSummary);
       document.getElementById('exportXlsxBtn').addEventListener('click', exportToXLSX);
       document.getElementById('submitBtn').addEventListener('click', submitToSheets);
@@ -732,6 +794,7 @@
           autoFormatDecimalMobile(e.target);
           updateProgress();
           updateInfo();
+          saveToLocalStorage(); // Autosave setiap perubahan
         });
         
         // Format saat blur (keluar dari input)
@@ -739,12 +802,14 @@
           if (e.target.value) {
             e.target.value = parseFloat(e.target.value).toFixed(2);
           }
+          saveToLocalStorage(); // Autosave saat blur
         });
         
         // Handle paste event
         input.addEventListener('paste', (e) => {
           setTimeout(() => {
             autoFormatDecimalMobile(e.target);
+            saveToLocalStorage(); // Autosave setelah paste
           }, 10);
         });
         
@@ -761,41 +826,157 @@
       }
     }
 
-    // DIPERBAIKI: Fungsi auto format TANPA auto-next
-function autoFormatDecimalMobile(input) {
-  // Ambil nilai saat ini dan bersihkan dari karakter non-digit
-  let rawValue = input.value;
-  let digits = rawValue.replace(/[^0-9]/g, '');
-  
-  // Batasi maksimal 4 digit (untuk range gramasi 70-90)
-  if (digits.length > 4) {
-    digits = digits.slice(0, 4);
-  }
-  
-  // Format hanya jika sudah ada minimal 3 digit
-  let formatted = '';
-  if (digits.length === 0) {
-    formatted = '';
-  } else if (digits.length === 1) {
-    formatted = digits;
-  } else if (digits.length === 2) {
-    formatted = digits;
-  } else if (digits.length === 3) {
-    formatted = digits.substring(0, 2) + '.' + digits.substring(2);
-  } else if (digits.length === 4) {
-    formatted = digits.substring(0, 2) + '.' + digits.substring(2);
-  }
-  
-  // Set nilai yang diformat
-  input.value = formatted;
-  
-  // Update styling background
-  if (digits.length > 0) {
-    input.style.backgroundColor = '#2a2a2a';
-  } else {
-    input.style.backgroundColor = '#1a1a1a';
-  }
-}
+    // AUTO FORMAT DECIMAL - FIXED VERSION
+    function autoFormatDecimalMobile(input) {
+      // Ambil nilai saat ini dan bersihkan dari karakter non-digit
+      let rawValue = input.value;
+      let digits = rawValue.replace(/[^0-9]/g, '');
+      
+      // Batasi maksimal 4 digit (untuk range gramasi 70-90)
+      if (digits.length > 4) {
+        digits = digits.slice(0, 4);
+      }
+      
+      // Format hanya jika sudah ada minimal 3 digit
+      let formatted = '';
+      if (digits.length === 0) {
+        formatted = '';
+      } else if (digits.length === 1) {
+        // 1 digit: tampilkan apa adanya (misal: "8")
+        formatted = digits;
+      } else if (digits.length === 2) {
+        // 2 digit: tampilkan apa adanya (misal: "87")
+        formatted = digits;
+      } else if (digits.length === 3) {
+        // 3 digit: format sebagai XX.X (misal: "872" → "87.2")
+        formatted = digits.substring(0, 2) + '.' + digits.substring(2);
+      } else if (digits.length === 4) {
+        // 4 digit: format sebagai XX.XX (misal: "8723" → "87.23")
+        formatted = digits.substring(0, 2) + '.' + digits.substring(2);
+      }
+      
+      // Set nilai yang diformat
+      input.value = formatted;
+      
+      // Update styling background
+      if (digits.length > 0) {
+        input.style.backgroundColor = '#2a2a2a';
+      } else {
+        input.style.backgroundColor = '#1a1a1a';
+      }
+    }
+
+    // ==================== AUTOSAVE FUNCTIONS ====================
+
+    function saveToLocalStorage() {
+      try {
+        // Simpan data tanggal dan mesin
+        const tanggal = document.getElementById('tanggal').value;
+        const mesin = document.getElementById('mesin').value;
+        
+        if (tanggal) {
+          localStorage.setItem(STORAGE_KEYS.tanggal, tanggal);
+        }
+        if (mesin) {
+          localStorage.setItem(STORAGE_KEYS.mesin, mesin);
+        }
+        
+        // Simpan data Filler 1
+        const weights1 = Array.from(document.querySelectorAll('#weights-grid-filler1 .weight-input'))
+          .map(input => input.value);
+        localStorage.setItem(STORAGE_KEYS.filler1, JSON.stringify(weights1));
+        
+        // Simpan data Filler 2
+        const weights2 = Array.from(document.querySelectorAll('#weights-grid-filler2 .weight-input'))
+          .map(input => input.value);
+        localStorage.setItem(STORAGE_KEYS.filler2, JSON.stringify(weights2));
+        
+        // Simpan timestamp
+        localStorage.setItem(STORAGE_KEYS.lastSaved, new Date().toISOString());
+        
+        console.log('✅ Data tersimpan otomatis');
+      } catch (error) {
+        console.error('❌ Gagal menyimpan ', error);
+      }
+    }
+
+    function loadFromLocalStorage() {
+      try {
+        // Load tanggal dan mesin
+        const savedTanggal = localStorage.getItem(STORAGE_KEYS.tanggal);
+        const savedMesin = localStorage.getItem(STORAGE_KEYS.mesin);
+        
+        if (savedTanggal) {
+          document.getElementById('tanggal').value = savedTanggal;
+        }
+        if (savedMesin) {
+          document.getElementById('mesin').value = savedMesin;
+        }
+        
+        // Load data Filler 1
+        const savedFiller1 = localStorage.getItem(STORAGE_KEYS.filler1);
+        if (savedFiller1) {
+          const weights1 = JSON.parse(savedFiller1);
+          const inputs1 = document.querySelectorAll('#weights-grid-filler1 .weight-input');
+          weights1.forEach((value, index) => {
+            if (inputs1[index] && value) {
+              inputs1[index].value = value;
+              inputs1[index].style.backgroundColor = '#2a2a2a';
+            }
+          });
+        }
+        
+        // Load data Filler 2
+        const savedFiller2 = localStorage.getItem(STORAGE_KEYS.filler2);
+        if (savedFiller2) {
+          const weights2 = JSON.parse(savedFiller2);
+          const inputs2 = document.querySelectorAll('#weights-grid-filler2 .weight-input');
+          weights2.forEach((value, index) => {
+            if (inputs2[index] && value) {
+              inputs2[index].value = value;
+              inputs2[index].style.backgroundColor = '#2a2a2a';
+            }
+          });
+        }
+        
+        // Update info dan progress
+        updateInfo();
+        
+        // Tampilkan notifikasi jika ada data tersimpan
+        const lastSaved = localStorage.getItem(STORAGE_KEYS.lastSaved);
+        if (lastSaved) {
+          const savedDate = new Date(lastSaved);
+          const now = new Date();
+          const diffMinutes = Math.floor((now - savedDate) / 60000);
+          
+          if (diffMinutes < 60) {
+            showMessage(`💾 Data tersimpan otomatis (${diffMinutes} menit lalu)`, 'success');
+          } else if (diffMinutes < 1440) {
+            const hours = Math.floor(diffMinutes / 60);
+            showMessage(`💾 Data tersimpan otomatis (${hours} jam lalu)`, 'success');
+          } else {
+            showMessage(`💾 Data tersimpan otomatis (kemarin)`, 'success');
+          }
+        }
+        
+        console.log('✅ Data dimuat dari localStorage');
+      } catch (error) {
+        console.error('❌ Gagal memuat ', error);
+      }
+    }
+
+    function clearLocalStorage() {
+      try {
+        localStorage.removeItem(STORAGE_KEYS.tanggal);
+        localStorage.removeItem(STORAGE_KEYS.mesin);
+        localStorage.removeItem(STORAGE_KEYS.filler1);
+        localStorage.removeItem(STORAGE_KEYS.filler2);
+        localStorage.removeItem(STORAGE_KEYS.lastSaved);
+        console.log('🗑️ Data localStorage dihapus');
+      } catch (error) {
+        console.error('❌ Gagal menghapus ', error);
+      }
+    }
 
     function updateProgress() {
       // Update Filler 1
@@ -898,6 +1079,124 @@ function autoFormatDecimalMobile(input) {
       
       // Update quality status
       updateQualityStatus();
+      
+      // Generate charts
+      generateGramasiChart(weights1, 'gramasiChart1', 'Filler 1');
+      generateGramasiChart(weights2, 'gramasiChart2', 'Filler 2');
+    }
+
+    function generateGramasiChart(data, canvasId, fillerName) {
+      const ctx = document.getElementById(canvasId).getContext('2d');
+      
+      // Destroy existing chart if it exists
+      if (canvasId === 'gramasiChart1' && chartFiller1) {
+        chartFiller1.destroy();
+      } else if (canvasId === 'gramasiChart2' && chartFiller2) {
+        chartFiller2.destroy();
+      }
+      
+      // Calculate average
+      const avg = data.reduce((sum, val) => sum + val, 0) / data.length;
+      
+      // Prepare data
+      const labels = Array.from({length: 125}, (_, i) => i + 1);
+      
+      const chartData = {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Gramasi',
+            data: data,
+            borderColor: 'blue',
+            tension: 0.1,
+            borderWidth: 1.5
+          },
+          {
+            label: 'STD',
+            data: Array(125).fill(STD_CONFIG.std),
+            borderColor: 'green',
+            borderWidth: 2,
+            borderDash: [5, 5]
+          },
+          {
+            label: 'LSL',
+            data: Array(125).fill(STD_CONFIG.minStd),
+            borderColor: 'red',
+            borderWidth: 2,
+            borderDash: [5, 5]
+          },
+          {
+            label: 'USL',
+            data: Array(125).fill(STD_CONFIG.maxStd),
+            borderColor: 'red',
+            borderWidth: 2,
+            borderDash: [5, 5]
+          },
+          {
+            label: 'AVG',
+            data: Array(125).fill(avg),
+            borderColor: 'purple',
+            borderWidth: 2,
+            borderDash: [5, 5]
+          },
+          {
+            label: 'UCL',
+            data: Array(125).fill(STD_CONFIG.maxStd),
+            borderColor: 'yellow',
+            borderWidth: 2,
+            borderDash: [5, 5]
+          },
+          {
+            label: 'LCL',
+            data: Array(125).fill(STD_CONFIG.minStd),
+            borderColor: 'yellow',
+            borderWidth: 2,
+            borderDash: [5, 5]
+          }
+        ]
+      };
+      
+      const config = {
+        type: 'line',
+        data: chartData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: false,
+              min: 70,
+              max: 88,
+              title: {
+                display: true,
+                text: 'Gramasi (gr)'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'No Sampel'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: `Sebaran Gramasi ${fillerName}`
+            }
+          }
+        }
+      };
+      
+      // Create new chart
+      if (canvasId === 'gramasiChart1') {
+        chartFiller1 = new Chart(ctx, config);
+      } else if (canvasId === 'gramasiChart2') {
+        chartFiller2 = new Chart(ctx, config);
+      }
     }
 
     function calculateFiller(fillerName, weights) {
@@ -1147,6 +1446,12 @@ function autoFormatDecimalMobile(input) {
         .then(r => r.json())
         .then(d => {
           showMessage('✅ Data berhasil dikirim!', 'success');
+          
+          // Clear localStorage setelah berhasil kirim
+          setTimeout(() => {
+            clearLocalStorage();
+            showMessage('🗑️ Data lokal dihapus setelah berhasil dikirim', 'success');
+          }, 2000);
         })
         .catch(e => {
           console.error(e);
@@ -1162,6 +1467,9 @@ function autoFormatDecimalMobile(input) {
       if (!confirm('Reset form? Semua data hilang!')) {
         return;
       }
+      
+      // Clear localStorage
+      clearLocalStorage();
       
       // Reset selects
       document.getElementById('mesin').value = '';
@@ -1229,6 +1537,8 @@ function autoFormatDecimalMobile(input) {
       
       // Update info
       updateInfo();
+      
+      showMessage('🗑️ Form direset dan data lokal dihapus', 'success');
     }
 
     function showMessage(text, type) {
